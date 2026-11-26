@@ -28,7 +28,7 @@ public static class AudioLinqQueries
         IEnumerable<Artist> artists,
         IEnumerable<Album> albums,
         IEnumerable<Track> tracks,
-        int topCount = 5)
+        int topCount)
     {
         return (from ar in artists
                 join al in albums on ar.Id equals al.ArtistId
