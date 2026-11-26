@@ -8,85 +8,101 @@ namespace LAB;
 
 public class ExcelStorage
 {
-    public List<Artist> Artists = new List<Artist>();
-    public List<Album> Albums = new List<Album>();
-    public List<Genre> Genres = new List<Genre>();
-    public List<Track> Tracks = new List<Track>();
+    public List<Artist> Artists {get;}
+    public List<Album> Albums {get;}
+    public List<Genre> Genres {get;}
+    public List<Track> Tracks {get;}
+
+    public ExcelStorage()
+    {
+        Artists = new List<Artist>();
+        Albums  = new List<Album>();
+        Genres  = new List<Genre>();
+        Tracks  = new List<Track>();
+    }
 
     public void Load(string filePath)
     {
         if (!File.Exists(filePath))
             throw new FileNotFoundException($"Файл не найден: {filePath}");
 
-        Artists.Clear();
-        Albums.Clear();
-        Genres.Clear();
-        Tracks.Clear();
-
         using FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read);
         IWorkbook workbook = new HSSFWorkbook(fs);
 
+        IRow row;
+        int id;
+        string name;
+        int artistId;
+        string title;
+        int albumId;
+        int genreId;
+        long duration;
+        long size;
+        decimal price;
 
-        ISheet artistSheet = workbook.GetSheet("Артисты"); 
+        ISheet artistSheet = workbook.GetSheet("Артисты");
         for (int r = 1; r <= artistSheet.LastRowNum; r++)
         {
-            IRow row = artistSheet.GetRow(r);
-            if (row == null || row.GetCell(0) == null) continue;
-
-            int id = (int)row.GetCell(0).NumericCellValue;
-            string name = row.GetCell(1)?.ToString()?.Trim() ?? "";
-            Artists.Add(new Artist(name, id));
+            row = artistSheet.GetRow(r);
+            if (row != null && row.GetCell(0) != null)
+            {
+                id = (int)row.GetCell(0).NumericCellValue;
+                name = row.GetCell(1)?.ToString()?.Trim() ?? "";
+                Artists.Add(new Artist(name, id));
+            }
         }
 
 
         ISheet albumSheet = workbook.GetSheet("Альбомы");
         for (int r = 1; r <= albumSheet.LastRowNum; r++)
         {
-            IRow row = albumSheet.GetRow(r);
-            if (row == null || row.GetCell(0) == null) continue;
-
-            int id = (int)row.GetCell(0).NumericCellValue;
-            string title = row.GetCell(1)?.ToString()?.Trim() ?? "";
-            int artistId = (int)row.GetCell(2).NumericCellValue;
-            Albums.Add(new Album(id, title, artistId));
+            row = albumSheet.GetRow(r);
+            if (row != null && row.GetCell(0) != null)
+            {
+                id = (int)row.GetCell(0).NumericCellValue;
+                title = row.GetCell(1)?.ToString()?.Trim() ?? "";
+                artistId = (int)row.GetCell(2).NumericCellValue;
+                Albums.Add(new Album(id, title, artistId));
+            }
         }
 
 
         ISheet genreSheet = workbook.GetSheet("Жанры");
         for (int r = 1; r <= genreSheet.LastRowNum; r++)
         {
-            IRow row = genreSheet.GetRow(r);
-            if (row == null || row.GetCell(0) == null) continue;
-
-            int id = (int)row.GetCell(0).NumericCellValue;
-            string name = row.GetCell(1)?.ToString()?.Trim() ?? "";
-            Genres.Add(new Genre(id, name));
+            row = genreSheet.GetRow(r);
+            if (row != null && row.GetCell(0) != null)
+            {
+                id = (int)row.GetCell(0).NumericCellValue;
+                name = row.GetCell(1)?.ToString()?.Trim() ?? "";
+                Genres.Add(new Genre(id, name));
+            }
         }
-
 
         ISheet trackSheet = workbook.GetSheet("Треки");
         for (int r = 1; r <= trackSheet.LastRowNum; r++)
         {
-            IRow row = trackSheet.GetRow(r);
-            if (row == null || row.GetCell(0) == null) continue;
-
-            int id = (int)row.GetCell(0).NumericCellValue;
-            string name = row.GetCell(1)?.ToString()?.Trim() ?? "";
-            int albumId = (int)row.GetCell(2).NumericCellValue;
-            int genreId = (int)row.GetCell(3).NumericCellValue;
-            long duration = (long)row.GetCell(4).NumericCellValue;
-            long size = (long)row.GetCell(5).NumericCellValue;
-            decimal price = (decimal)row.GetCell(6).NumericCellValue;
-
-            Tracks.Add(new Track(id, name, albumId, genreId, duration, size, price));
+            row = trackSheet.GetRow(r);
+            if (row != null && row.GetCell(0) != null)
+            {
+                id = (int)row.GetCell(0).NumericCellValue;
+                name = row.GetCell(1)?.ToString()?.Trim() ?? "";
+                albumId = (int)row.GetCell(2).NumericCellValue;
+                genreId = (int)row.GetCell(3).NumericCellValue;
+                duration = (long)row.GetCell(4).NumericCellValue;
+                size = (long)row.GetCell(5).NumericCellValue;
+                price = (decimal)row.GetCell(6).NumericCellValue;
+                Tracks.Add(new Track(id, name, albumId, genreId, duration, size, price));
+            }
         }
     }
 
-    
     public void Save(string filePath)
     {
         IWorkbook workbook = new HSSFWorkbook();
-
+        
+        IRow row;
+        
         ISheet albumSheet = workbook.CreateSheet("Альбомы");
         IRow alHeader = albumSheet.CreateRow(0);
         alHeader.CreateCell(0).SetCellValue("ID");
@@ -94,7 +110,7 @@ public class ExcelStorage
         alHeader.CreateCell(2).SetCellValue("ID Исполнителя");
         for (int i = 0; i < Albums.Count; i++)
         {
-            IRow row = albumSheet.CreateRow(i + 1);
+            row = albumSheet.CreateRow(i + 1);
             row.CreateCell(0).SetCellValue(Albums[i].Id);
             row.CreateCell(1).SetCellValue(Albums[i].Title);
             row.CreateCell(2).SetCellValue(Albums[i].ArtistId);
@@ -106,7 +122,7 @@ public class ExcelStorage
         arHeader.CreateCell(1).SetCellValue("Имя");
         for (int i = 0; i < Artists.Count; i++)
         {
-            IRow row = artistSheet.CreateRow(i + 1);
+            row = artistSheet.CreateRow(i + 1);
             row.CreateCell(0).SetCellValue(Artists[i].Id);
             row.CreateCell(1).SetCellValue(Artists[i].Name);
         }
@@ -122,7 +138,7 @@ public class ExcelStorage
         trHeader.CreateCell(6).SetCellValue("Стоимость");
         for (int i = 0; i < Tracks.Count; i++)
         {
-            IRow row = trackSheet.CreateRow(i + 1);
+            row = trackSheet.CreateRow(i + 1);
             row.CreateCell(0).SetCellValue(Tracks[i].Id);
             row.CreateCell(1).SetCellValue(Tracks[i].Name);
             row.CreateCell(2).SetCellValue(Tracks[i].AlbumId);
@@ -138,7 +154,7 @@ public class ExcelStorage
         gnHeader.CreateCell(1).SetCellValue("Название");
         for (int i = 0; i < Genres.Count; i++)
         {
-            IRow row = genreSheet.CreateRow(i + 1);
+            row = genreSheet.CreateRow(i + 1);
             row.CreateCell(0).SetCellValue(Genres[i].Id);
             row.CreateCell(1).SetCellValue(Genres[i].Name);
         }

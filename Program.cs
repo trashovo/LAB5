@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace LAB
 {
@@ -65,22 +64,22 @@ namespace LAB
                             switch (table)
                             {
                                 case 1:
-                                    foreach (var item in storage.Artists.Take(count))
+                                    foreach (Artist item in storage.Artists.Take(count))
                                         Console.WriteLine(item);
                                     Console.ReadKey();
                                     break;
                                 case 2:
-                                    foreach (var item in storage.Albums.Take(count))
+                                    foreach (Album item in storage.Albums.Take(count))
                                         Console.WriteLine(item);
                                     Console.ReadKey();
                                     break;
                                 case 3:
-                                    foreach (var item in storage.Genres.Take(count))
+                                    foreach (Genre item in storage.Genres.Take(count))
                                         Console.WriteLine(item);
                                     Console.ReadKey();
                                     break;
                                 case 4:
-                                    foreach (var item in storage.Tracks.Take(count))
+                                    foreach (Track item in storage.Tracks.Take(count))
                                         Console.WriteLine(item);
                                     Console.ReadKey();
                                     break;
@@ -108,7 +107,7 @@ namespace LAB
                                 case 1:
                                     if (storage.Albums.Any(a => a.ArtistId == id))
                                         throw new InvalidOperationException(
-                                            "Нельзя удалить артиста, у которого есть альбомы.");
+                                            "Нельзя удалить артиста, у которого есть альбомы");
                                     var artist = storage.Artists.FirstOrDefault(a => a.Id == id);
                                     if (artist != null) removed = storage.Artists.Remove(artist);
                                     break;
@@ -116,7 +115,7 @@ namespace LAB
                                 case 2:
                                     if (storage.Tracks.Any(t => t.AlbumId == id))
                                         throw new InvalidOperationException(
-                                            "Нельзя удалить альбом, в котором есть треки.");
+                                            "Нельзя удалить альбом, в котором есть треки");
                                     var album = storage.Albums.FirstOrDefault(a => a.Id == id);
                                     if (album != null) removed = storage.Albums.Remove(album);
                                     break;
@@ -124,7 +123,7 @@ namespace LAB
                                 case 3:
                                     if (storage.Tracks.Any(t => t.GenreId == id))
                                         throw new InvalidOperationException(
-                                            "Нельзя удалить жанр, который используется в треках.");
+                                            "Нельзя удалить жанр, который используется в треках");
                                     var genre = storage.Genres.FirstOrDefault(g => g.Id == id);
                                     if (genre != null) removed = storage.Genres.Remove(genre);
                                     break;
@@ -135,7 +134,7 @@ namespace LAB
                                     break;
                             }
 
-                            Console.WriteLine(removed ? "Запись удалена." : $"Запись с ID {id} не найдена.");
+                            Console.WriteLine(removed ? "Запись удалена" : $"Запись с ID {id} не найдена");
                             Console.ReadKey();
                             break;
                         }
@@ -147,46 +146,54 @@ namespace LAB
                             switch (table)
                             {
                                 case 1:
-                                    int arId = check.NewReadInt("ID артиста: ");
+                                    int MaxIdArtist = storage.Artists.Max(a => a.Id);
+                                    int arId = check.NewReadInt($"ID артиста(последний записанный {MaxIdArtist}): ");
                                     if (storage.Artists.Any(a => a.Id == arId))
-                                        throw new ArgumentException($"Артист с ID {arId} уже существует.");
+                                        throw new ArgumentException($"Артист с ID {arId} уже существует");
                                     string arName = check.ReadString("Имя исполнителя: ");
                                     storage.Artists.Add(new Artist(arName, arId));
                                     break;
 
                                 case 2:
-                                    int alId = check.NewReadInt("ID альбома: ");
+                                    int MaxIdAlbums = storage.Albums.Max(a => a.Id);
+                                    int alId = check.NewReadInt($"ID альбома(последний записанный {MaxIdAlbums}): ");
                                     if (storage.Albums.Any(a => a.Id == alId))
-                                        throw new ArgumentException($"Альбом с ID {alId} уже существует.");
+                                        throw new ArgumentException($"Альбом с ID {alId} уже существует");
                                     string title = check.ReadString("Название альбома: ");
                                     int artistId = check.NewReadInt("ID исполнителя: ");
                                     if (!storage.Artists.Any(a => a.Id == artistId))
-                                        throw new ArgumentException($"Артист с ID {artistId} не найден.");
+                                        throw new ArgumentException($"Артист с ID {artistId} не найден");
                                     storage.Albums.Add(new Album(alId, title, artistId));
                                     break;
 
                                 case 3:
-                                    int gId = check.NewReadInt("ID жанра: ");
+                                    int MaxIdGenres =  storage.Genres.Max(a => a.Id);
+                                    int gId = check.NewReadInt($"ID жанра(последний записанный {MaxIdGenres}): ");
                                     if (storage.Genres.Any(g => g.Id == gId))
-                                        throw new ArgumentException($"Жанр с ID {gId} уже существует.");
+                                        throw new ArgumentException($"Жанр с ID {gId} уже существует");
                                     string gName = check.ReadString("Название жанра: ");
                                     storage.Genres.Add(new Genre(gId, gName));
                                     break;
 
                                 case 4:
-                                    int trId = check.NewReadInt("ID трека: ");
+                                    int MaxIDTracks = storage.Tracks.Max(t => t.Id);
+                                    int MaxIDAlbums = storage.Albums.Max(a => a.Id);
+                                    int MinIDAlbums = storage.Albums.Min(a => a.Id);
+                                    int MaxIDGenres = storage.Genres.Max(g => g.Id);
+                                    int MinIDGenres = storage.Genres.Min(g => g.Id);
+                                    int trId = check.NewReadInt($"ID трека(последний записанный {MaxIDTracks}): ");
                                     if (storage.Tracks.Any(t => t.Id == trId))
-                                        throw new ArgumentException($"Трек с ID {trId} уже существует.");
+                                        throw new ArgumentException($"Трек с ID {trId} уже существует");
 
                                     string trName = check.ReadString("Название трека: ");
 
-                                    int albumId = check.NewReadInt("ID альбома: ");
+                                    int albumId = check.NewReadInt($"ID альбома({MinIDAlbums}-{MaxIDAlbums}): ");
                                     if (!storage.Albums.Any(a => a.Id == albumId))
                                         throw new ArgumentException($"Альбом с ID {albumId} не найден.");
 
-                                    int genreId = check.NewReadInt("ID жанра: ");
+                                    int genreId = check.NewReadInt($"ID жанра({MinIDGenres}-{MaxIDGenres}): ");
                                     if (!storage.Genres.Any(g => g.Id == genreId))
-                                        throw new ArgumentException($"Жанр с ID {genreId} не найден.");
+                                        throw new ArgumentException($"Жанр с ID {genreId} не найден");
 
                                     long duration = check.ReadLong("Длительность (мс): ");
 
@@ -198,7 +205,6 @@ namespace LAB
                                         price));
                                     break;
                             }
-
                             Console.WriteLine("Запись добавлена.");
                             Console.ReadKey();
                             break;
@@ -220,7 +226,7 @@ namespace LAB
                                     long minMs = check.ReadLong("Минимальная длительность (мс): ");
                                     var longTracks = AudioLinqQueries.GetTracksLongerThan(storage.Tracks, minMs);
                                     Console.WriteLine($"Найдено: {longTracks.Count}:");
-                                    foreach (var t in longTracks) Console.WriteLine(t);
+                                    foreach (Track t in longTracks) Console.WriteLine(t);
                                     Console.ReadKey();
                                     break;
                                 }
@@ -241,12 +247,11 @@ namespace LAB
                                     var topArtists = AudioLinqQueries.GetTopArtistsByTrackCount(
                                         storage.Artists, storage.Albums, storage.Tracks, top);
                                     Console.WriteLine($"Топ-{top} исполнителей по количеству треков:");
-                                    foreach (var item in topArtists)
+                                    foreach (string item in topArtists)
                                         Console.WriteLine(item);
                                     Console.ReadKey();
                                     break;
                                 }
-
 
                                 case 4:
                                 {
@@ -257,9 +262,7 @@ namespace LAB
                                     Console.ReadKey();
                                     break;
                                 }
-                                
                             }
-
                             break;
                         }
                         case 5:
@@ -267,10 +270,16 @@ namespace LAB
                             Console.Write($"Имя файла для сохранения (Enter — '{Filename}'): ");
                             string savePath = Console.ReadLine()?.Trim() ?? "";
                             if (string.IsNullOrWhiteSpace(savePath))
-                                savePath = Filename;
-
-                            storage.Save($"C:\\Users\\af\\Documents\\C#\\LAB\\LAB\\{savePath}.xls");
-                            Console.WriteLine($"\nИзменения сохранены в '{savePath}'.");
+                            {
+                                storage.Save(Filename);
+                                Console.WriteLine($"\nИзменения сохранены");
+                            }
+                            else
+                            {
+                                storage.Save($"C:\\Users\\af\\Documents\\C#\\LAB\\LAB\\{savePath}.xls");
+                                Console.WriteLine($"\nИзменения сохранены в '{savePath}'");
+                            } 
+                            
                             Console.ReadKey();
                             break;
                         }
@@ -286,4 +295,3 @@ namespace LAB
         }
     }
 }
-                                
