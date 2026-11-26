@@ -43,6 +43,6 @@ public class Genre
 
     public override string ToString()
     {
-        return $"Жанр: {_name} ID: ({_id})";
+        return $"Жанр: {_name} | ID: ({_id})";
     }
 }

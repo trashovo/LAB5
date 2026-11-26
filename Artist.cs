@@ -42,6 +42,6 @@ public class Artist
     }
     public override string ToString()
     {
-        return $"Исполнитель: {_name} ID: ({_id})";
+        return $"Исполнитель: {_name} | ID: ({_id})";
     }
 }

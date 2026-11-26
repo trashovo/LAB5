@@ -58,6 +58,6 @@ public class Album
 
     public override string ToString()
     {
-        return $"Альбом: {_title} ID: ({_id}) ID исполнителя: ({_artistId})";
+        return $"Альбом: {_title} | ID: ({_id}) | ID исполнителя: ({_artistId})";
     }
 }

@@ -118,7 +118,7 @@ public class Track
 
     public override string ToString()
     {
-        return $"Трек: {_name} ID: ({_id}) Альбом: ({_albumId}) Жанр: ({_genreId}) " +
-               $"Длительность: {_duration} мс Размер: {_size} Б Стоимость: {_price} руб.";
+        return $"Трек: {_name} | ID: ({_id}) | Альбом: ({_albumId}) | Жанр: ({_genreId}) " +
+               $"Длительность: {_duration} мс | Размер: {_size} Б | Стоимость: {_price} руб.";
     }
 }

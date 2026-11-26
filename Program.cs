@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 
 namespace LAB
 {
@@ -91,7 +92,14 @@ namespace LAB
                         {
                             Console.WriteLine("\n1 — Артист | 2 — Альбом | 3 — Жанр | 4 — Трек");
                             int table = check.ReadCount("Введите номер таблицы: ", 1, 4);
-                            int id = check.NewReadInt("Введите ID: ");
+                            (int minId, int maxId) = table switch
+                            {
+                                1 => (storage.Artists.Min(a => a.Id), storage.Artists.Max(a => a.Id)),
+                                2 => (storage.Albums.Min(a => a.Id), storage.Albums.Max(a => a.Id)),
+                                3 => (storage.Genres.Min(g => g.Id), storage.Genres.Max(g => g.Id)),
+                                4 => (storage.Tracks.Min(t => t.Id), storage.Tracks.Max(t => t.Id)),
+                            };
+                            int id = check.ReadCount($"Введите ID ({minId}-{maxId}): ", minId, maxId);
 
                             bool removed = false;
 
@@ -200,7 +208,7 @@ namespace LAB
                             Console.WriteLine("\n1. (1 таблица(перечень)) Треки длиннее N мс");
                             Console.WriteLine("2. (2 таблицы(значение)) Количество треков в жанре");
                             Console.WriteLine("3. (3 таблицы(перечень)) Топ N исполнителей по кол-ву треков");
-                            Console.WriteLine("4. (3 таблицы(значение)) min суммарная стоимость артиста в жанре Blues");
+                            Console.WriteLine("4. (3 таблицы(значение)) min суммарная стоимость артиста в жанре");
 
                             int q = check.ReadCount("Выберите запрос: ", 1, 4);
                             Console.WriteLine();
@@ -261,7 +269,7 @@ namespace LAB
                             if (string.IsNullOrWhiteSpace(savePath))
                                 savePath = Filename;
 
-                            storage.Save(savePath);
+                            storage.Save($"C:\\Users\\af\\Documents\\C#\\LAB\\LAB\\{savePath}.xls");
                             Console.WriteLine($"\nИзменения сохранены в '{savePath}'.");
                             Console.ReadKey();
                             break;

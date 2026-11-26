@@ -32,7 +32,7 @@ namespace LAB
             
             while (true)
             {
-                if (long.TryParse(input, out x))
+                if (long.TryParse(input, out x) && x > 0)
                 {
                     return x;
                 }
